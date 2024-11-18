@@ -14,6 +14,7 @@
         </header>
 
         <div class="flex flex-col flex-wrap my-4 mt-8">
+            @auth
             <section class="grid grid-cols-1 gap-4 px-4 mt-4 sm:grid-cols-3 sm:px-8">
 
                 <section class="rounded flex items-center bg-lime-200 border border-lime-600 overflow-hidden">
@@ -45,9 +46,8 @@
                         <p class="text-3xl">142,334</p>
                     </div>
                 </section>
-
-
             </section>
+            @endauth
 
             <section class="grid grid-cols-1 gap-4 px-4 mt-4 sm:grid-cols-3 sm:px-8">
 
