@@ -96,6 +96,19 @@
                         </x-nav-link>
                     @endif
                 @endauth
+
+                <!-- Search Bar -->
+                <div>
+                    <form method="GET" action="/jokes/search" class="flex items-center space-x-3 mx-5">
+                        <input type="text" name="keywords" placeholder="Joke search..."
+                               class="w-full md:w-48 px-3 py-2 text-zinc-800 focus:outline-none focus:ring focus:ring-zinc-300 rounded-md border border-gray-300 text-sm"/>
+
+                        <button type="submit"
+                                class="w-full md:w-auto bg-indigo-600 hover:bg-sky-600 text-white px-3 py-2 rounded-md focus:outline-none transition ease-in-out duration-300 text-sm">
+                            <i class="fa fa-search"></i> Search
+                        </button>
+                    </form>
+                </div>
             </div>
 
             <!-- Hamburger -->

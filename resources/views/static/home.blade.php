@@ -52,10 +52,18 @@
             <section class="grid grid-cols-1 gap-4 px-4 mt-4 sm:grid-cols-3 sm:px-8">
 
                 <article class=" bg-white shadow rounded p-2 flex flex-col">
-                    <header class="-mx-2 bg-zinc-700 text-zinc-200 text-lg p-4 -mt-2 mb-4 rounded-t flex-0">
+                    <header class="-mx-2 bg-zinc-700 text-zinc-200 text-lg p-4 -mt-2 mb-4 rounded-t flex-0 flex flex-row items-center">
                         <h4>
                             Time for a Random Joke
                         </h4>
+
+{{--                        New Joke button--}}
+                        <form action="#" method="GET" class="ml-auto">
+                                <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white px-3 py-1 rounded-md focus:outline-none">
+                                    New Joke
+                                </button>
+                        </form>
+
                     </header>
                     <section class="flex-grow flex flex-col space-y-3 text-zinc-600">
                         <p class="">
