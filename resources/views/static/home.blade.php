@@ -23,7 +23,7 @@
                     </div>
                     <div class="rounded-r px-6 text-lime-800">
                         <h3 class="tracking-wider">Total Members</h3>
-                        <p class="text-3xl">12,768</p>
+                        <p class="text-3xl">{{ $users }}</p>
                     </div>
                 </section>
 
@@ -33,7 +33,7 @@
                     </div>
                     <div class="rounded-r px-6 text-amber-700">
                         <h3 class="tracking-wider">Total Categories</h3>
-                        <p class="text-3xl">39,265</p>
+                        <p class="text-3xl">{{ $categories }}</p>
                     </div>
                 </section>
 
@@ -43,14 +43,16 @@
                     </div>
                     <div class="rounded-r px-6 text-indigo-700">
                         <h3 class="tracking-wider">Total Jokes</h3>
-                        <p class="text-3xl">142,334</p>
+                        <p class="text-3xl">{{ $jokes }}</p>
                     </div>
                 </section>
             </section>
             @endauth
 
-            <section class="grid grid-cols-1 gap-4 px-4 mt-4 sm:grid-cols-3 sm:px-8">
 
+
+            <section class="grid grid-cols-1 gap-4 px-4 mt-4 sm:grid-cols-3 sm:px-8">
+                @if ($random_joke)
                 <article class=" bg-white shadow rounded p-2 flex flex-col">
                     <header class="-mx-2 bg-zinc-700 text-zinc-200 text-lg p-4 -mt-2 mb-4 rounded-t flex-0 flex flex-row items-center">
                         <h4>
@@ -58,7 +60,7 @@
                         </h4>
 
 {{--                        New Joke button--}}
-                        <form action="#" method="GET" class="ml-auto">
+                        <form action="/" method="GET" class="ml-auto">
                                 <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white px-3 py-1 rounded-md focus:outline-none">
                                     New Joke
                                 </button>
@@ -67,19 +69,16 @@
                     </header>
                     <section class="flex-grow flex flex-col space-y-3 text-zinc-600">
                         <p class="">
-                            A cowboy butcher decided to relocate his fresh meat shop.
-                        </p>
-                        <p class="">
-                            "Sorry Folks. I'm pullin' up steaks."
+                            {{ $random_joke->text }}
                         </p>
                     </section>
                     <footer class="-mx-2 bg-zinc-100 text-zinc-600 text-sm mt-4 -mb-2 rounded-b flex-0">
                         <p class="w-full text-right rounded-b hover:text-black px-4 py-2">
-                            Author's Name
+                            By: {{ $random_joke->author->name ?? 'Unknown' }}
                         </p>
                     </footer>
                 </article>
-
+                @else
                 <article class="bg-white shadow rounded p-2 flex flex-col">
                     <header class="-mx-2 bg-zinc-700 text-zinc-200 text-lg p-4 -mt-2 mb-4 rounded-t flex-0">
                         <h4>
@@ -97,6 +96,7 @@
                         </p>
                     </footer>
                 </article>
+                @endif
 
             </section>
 

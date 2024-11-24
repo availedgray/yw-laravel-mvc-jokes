@@ -6,11 +6,11 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     @auth
-                        <a href="{{ route('welcome') }}">
+                        <a href="{{ route('home') }}">
                             <x-application-logo class="block h-9 w-auto fill-current text-gray-800"/>
                         </a>
                     @else
-                        <a href="{{ route('welcome') }}">
+                        <a href="{{ route('home') }}">
                             <x-application-logo class="block h-9 w-auto fill-current text-gray-800"/>
                         </a>
                     @endauth
@@ -23,15 +23,19 @@
                                     :active="request()->routeIs('dashboard')">
                             {{ __('Dashboard') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('users.index')"
+                                    :active="request()->routeIs('users.index')">
+                            {{ __('Users') }}
+                        </x-nav-link>
                     @else
-                        <x-nav-link :href="route('welcome')"
-                                    :active="request()->routeIs('welcome')">
+                        <x-nav-link :href="route('home')"
+                                    :active="request()->routeIs('home')">
                             {{ __('Welcome') }}
                         </x-nav-link>
                     @endauth
-                    <x-nav-link :href="route('welcome')"
-                                :active="request()->routeIs('welcome')">
-                        {{ __('Another Link') }}
+                    <x-nav-link :href="route('jokes.index')"
+                                :active="request()->routeIs('jokes.index')">
+                        {{ __('Jokes') }}
                     </x-nav-link>
                 </div>
 

@@ -1,19 +1,48 @@
 <?php
-/**
- * Assessment Title: Portfolio Part 2
- * Cluster:          SaaS: Part 1 – Front End Development
- * Qualification:    ICT50220 Diploma of Information Technology (Advanced Programming)
- * Name:             YANG WANG
- * Student ID:       20112222
- * Year/Semester:    2024/S2
- *
- * YOUR SUMMARY OF PORTFOLIO ACTIVITY
- * GOES HERE
- */
-
 namespace Database\Seeders;
 
-class CategorySeeder
-{
+use App\Models\Category;
+use Illuminate\Database\Seeder;
 
+class CategorySeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        Category::create([
+            'name' => 'Comedy',
+        ]);
+
+        Category::create([
+            'name' => 'Drama',
+        ]);
+
+        Category::create([
+            'name' => 'Dad',
+        ]);
+
+        Category::create([
+            'name' => 'Dummy',
+        ]);
+
+        Category::create([
+            'name' => 'Tech',
+        ]);
+
+        Category::create([
+            'name' => 'Pet',
+        ]);
+
+        Category::create([
+            'name' => 'Short',
+        ]);
+
+        Category::create([
+            'name' => 'Long',
+        ]);
+    }
 }

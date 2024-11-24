@@ -123,6 +123,55 @@
                            class="underline underline-offset-2 text-zinc-900 rounded border-2 border-transparent hover:text-white hover:bg-lime-500 hover:border-lime-500">
                             https://help.screencraft.net.au/help/2680392001</a>
                         (TAFE Students only)
+                    <dt class="col-span-1">Short Jokes Dataset</dt>
+                    <dd class="col-span-4">
+                        <a href="https://github.com/amoudgl/short-jokes-dataset"
+                           class="underline underline-offset-2 text-zinc-900 rounded border-2 border-transparent hover:text-zinc-500 ">
+                            https://github.com/amoudgl/short-jokes-dataset
+                        </a>
+                    </dd>
+
+                    <dt class="col-span-1">Joke Dataset</dt>
+                    <dd class="col-span-4">
+                        <a href="https://github.com/taivop/joke-dataset"
+                           class="underline underline-offset-2 text-zinc-900 rounded border-2 border-transparent hover:text-zinc-500 ">
+                            https://github.com/taivop/joke-dataset
+                        </a>
+                    </dd>
+
+                    <dt class="col-span-1">Developer Jokes</dt>
+                    <dd class="col-span-4">
+                        <a href="https://github.com/shrutikapoor08/devjokes"
+                           class="underline underline-offset-2 text-zinc-900 rounded border-2 border-transparent hover:text-zinc-500 ">
+                            https://github.com/shrutikapoor08/devjoke</a>
+                    </dd>
+
+                    <dt class="col-span-1">Coding Jokes</dt>
+                    <dd class="col-span-4">
+                        <a href="https://github.com/PanagiotisKots/Coding-Jokes"
+                           class="underline underline-offset-2 text-zinc-900 rounded border-2 border-transparent hover:text-zinc-500 ">
+                            https://github.com/PanagiotisKots/Coding-Jokes</a>
+                    </dd>
+
+                    <dt class="col-span-1">Computer Puns</dt>
+                    <dd class="col-span-4">
+                        <a href="https://github.com/AlexLakatos/computer-puns"
+                           class="underline underline-offset-2 text-zinc-900 rounded border-2 border-transparent hover:text-zinc-500 ">
+                            https://github.com/AlexLakatos/computer-puns</a>
+                    </dd>
+
+                    <dt class="col-span-1">Jokes Data</dt>
+                    <dd class="col-span-4">
+                        <a href="https://github.com/orionw/rJokesData"
+                           class="underline underline-offset-2 text-zinc-900 rounded border-2 border-transparent hover:text-zinc-500 ">
+                            https://github.com/orionw/rJokesData</a>
+                    </dd>
+
+                    <dt class="col-span-1">Dad Jokes</dt>
+                    <dd class="col-span-4">
+                        <a href="https://github.com/wesbos/dad-jokes"
+                           class="underline underline-offset-2 text-zinc-900 rounded border-2 border-transparent hover:text-zinc-500 ">
+                            https://github.com/wesbos/dad-jokes</a>
                     </dd>
                 </dl>
 
