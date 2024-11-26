@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\DeleteJokeRequest;
+use App\Http\Requests\RemoveJokeRequest;
+use App\Http\Requests\RestoreJokeRequest;
 use App\Models\Category;
 use App\Models\Joke;
 use App\Http\Requests\StoreJokeRequest;
@@ -24,7 +26,9 @@ class JokeController extends Controller
         }
 
         $data = Joke::with(['category', 'author'])->paginate(5);
-        return view('jokes.index', compact('data'));
+        $trashedCount = Joke::onlyTrashed()->latest()->get()->count();
+
+        return view('jokes.index', compact('data', 'trashedCount'));
     }
 
 
@@ -141,5 +145,54 @@ class JokeController extends Controller
 
         return redirect()->route('jokes.index')
             ->with('success', 'Joke deleted successfully');
+    }
+
+    /**
+     * Add soft deletes feature
+     */
+    public function trash()
+    {
+        $jokes = Joke::onlyTrashed()->paginate(5);
+        return view('jokes.trash', compact(['jokes',]));
+    }
+
+    public function restore($id)
+    {
+//        dd($joke);
+        $joke = Joke::onlyTrashed()->findOrFail($id);
+
+        $joke->restore();
+
+        return redirect()
+            ->back()
+            ->with('success', "Restored {$joke->title}.");
+    }
+
+    public function remove($id)
+    {
+        $joke = Joke::onlyTrashed()->findOrFail($id);
+        $joke->forceDelete();
+
+        return redirect()
+            ->back()
+            ->with('success', "Permanently deleted {$joke->title}.");
+    }
+
+    public function recoverAll()
+    {
+        $trashCount = Joke::onlyTrashed()->restore();
+
+        return redirect()
+            ->back()
+            ->with('success', "Successfully recovered $trashCount jokes.");
+    }
+
+    public function empty()
+    {
+        $trashCount = Joke::onlyTrashed()->forceDelete();
+
+        return redirect()
+            ->back()
+            ->with('success', "Successfully emptied trash of $trashCount jokes.");
     }
 }

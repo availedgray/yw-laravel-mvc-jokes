@@ -28,7 +28,9 @@ class UserController extends Controller
     public function index()
     {
         $data = User::latest()->paginate(5);
-        return view('users.index',compact('data'));
+        $trashedCount = User::onlyTrashed()->latest()->get()->count();
+
+        return view('users.index',compact('data', 'trashedCount'));
     }
 
     /**
@@ -94,7 +96,7 @@ class UserController extends Controller
          * This then is used to show the possible roles on the admin page
          * and allow the allocation of the role to the user.
          */
-        Gate::authorize('edit user', $user);
+        Gate::authorize('edit, restore and remove user', $user);
         $currentUser = Auth::user();
         $roles = [];
 
@@ -163,5 +165,60 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('users.index')
             ->with('success', 'User deleted successfully');
+    }
+
+    /**
+     * Add soft deletes feature
+     */
+    public function trash()
+    {
+        $users = User::onlyTrashed()->paginate(5);
+        return view('users.trash', compact(['users',]));
+    }
+
+    public function restore($user)
+    {
+        $authUser = Auth::user();
+        $targetUser = User::onlyTrashed()->findOrFail($user);
+        Gate::authorize('edit, restore and remove user', [$authUser, $targetUser]);
+
+        $user = User::onlyTrashed()->findOrFail($user);
+        $user->restore();
+
+        return redirect()
+            ->back()
+            ->with('success', "Restored {$user->name}.");
+    }
+
+    public function remove($user)
+    {
+        $authUser = Auth::user();
+        $targetUser = User::onlyTrashed()->findOrFail($user);
+        Gate::authorize('edit, restore and remove user', [$authUser, $targetUser]);
+
+        $user = User::onlyTrashed()->findOrFail($user);
+        $user->forceDelete();
+
+        return redirect()
+            ->back()
+            ->with('success', "Permanently deleted {$user->name}.");
+    }
+
+    public function recoverAll()
+    {
+        $trashCount = User::onlyTrashed()->restore();
+
+        return redirect()
+            ->back()
+            ->with('success', "Successfully recovered $trashCount users.");
+    }
+
+    public function empty()
+    {
+        $trashCount = User::onlyTrashed()->forceDelete();
+
+        return redirect()
+            ->back()
+            ->with('success', "Successfully emptied trash of $trashCount users.");
     }
 }

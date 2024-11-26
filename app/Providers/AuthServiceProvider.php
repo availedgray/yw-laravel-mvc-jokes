@@ -64,7 +64,7 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasAnyRole(['Super-Admin', 'Admin', 'Staff']);
         });
 
-        Gate::define('edit user', function (User $user, User $targetUser) {
+        Gate::define('edit, restore and remove user', function (User $user, User $targetUser) {
             if ($user->hasRole('Super-Admin')) {
                 return true;
             }
@@ -96,9 +96,20 @@ class AuthServiceProvider extends ServiceProvider
             return false;
         });
 
-//        Gate::define('create client user', function (User $user) {
-//            return $user->hasAnyRole(['Super-Admin', 'Admin', 'Staff']);
-//        });
+        // add soft deletes feature
+        // User restore permission
+
+
+        // User remove permission
+        Gate::define('user-remove', function (User $authUser, User $targetUser) {
+            return $authUser->can('user-remove') && $this->canOperateOn($authUser, $targetUser);
+        });
+
+        // User recover permission
+        Gate::define('user-recover', function (User $authUser, User $targetUser) {
+            return $authUser->can('user-recover') && $this->canOperateOn($authUser, $targetUser);
+        });
+
     }
 }
 

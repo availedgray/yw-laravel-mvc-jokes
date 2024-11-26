@@ -21,6 +21,20 @@
                 <i class="fa-solid fa-user-plus "></i>
                 <span class="pl-4">Add User</span>
             </x-primary-link-button>
+
+{{--            add trash area--}}
+            <a href="{{ route('users.trash') }}"
+               class="bg-zinc-500 hover:bg-zinc-900 text-white hover:text-white mx-2 py-2 px-4 text-center rounded-md text-sm
+                    @if($trashedCount>0)
+                    text-white hover:bg-black bg-zinc-500
+                    @else
+                    text-white hover:bg-black bg-zinc-200
+                    @endif
+                    duration-300 ease-in-out transition-all space-x-2">
+                <i class="fa fa-trash font-xl"></i>
+                {{ $trashedCount }} {{ __('Deleted') }}
+            </a>
+
         </header>
 
         @auth

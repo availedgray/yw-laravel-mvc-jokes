@@ -17,7 +17,9 @@ class RoleSeeder extends Seeder
         'role-list',      'role-show',      'role-create',     'role-edit',      'role-delete',
         'joke-list',   'joke-show',   'joke-create',  'joke-edit',   'joke-delete',
         'user-list',      'user-show',      'user-create',     'user-edit',      'user-delete',
-        'members',   'trash-clear',    'trash-recover',
+        'members',
+        'joke-restore',    'joke-remove',  'joke-recover',
+        'user-restore',    'user-remove',  'user-recover',
     ];
 
 
@@ -55,14 +57,19 @@ class RoleSeeder extends Seeder
         $roleAdmin->givePermissionTo('user-create');
         $roleAdmin->givePermissionTo('user-delete');
         $roleAdmin->givePermissionTo('members');
-        $roleAdmin->givePermissionTo('trash-clear');
-        $roleAdmin->givePermissionTo('trash-recover');
+        $roleAdmin->givePermissionTo([
+            'joke-restore',    'joke-remove',  'joke-recover',
+            'user-restore',    'user-remove',  'user-recover',
+            ]);
+
+
 
         $roleStaff = Role::create(['name' => 'Staff']);
         $roleStaff->givePermissionTo([
             'joke-list', 'joke-show', 'joke-create', 'joke-edit', 'joke-delete',
             'user-list',   'user-show',  'user-create',  'user-edit',  'user-delete',
-            'members',
+            'members',  'joke-restore',    'joke-remove',  'joke-recover',
+            'user-restore',    'user-remove',  'user-recover',
         ]);
 
         // Generate the Client role
@@ -73,6 +80,9 @@ class RoleSeeder extends Seeder
         $roleUser->givePermissionTo('joke-create');
         $roleUser->givePermissionTo('joke-delete');
         $roleUser->givePermissionTo('members');
+        $roleAdmin->givePermissionTo([
+            'joke-restore',    'joke-remove',  'joke-recover',
+            ]);
 
 //        // Unverified Guest Role
 //        $roleGuest = Role::create(['name' => 'Guest']);
