@@ -61,7 +61,8 @@ class RoleSeeder extends Seeder
         $roleStaff = Role::create(['name' => 'Staff']);
         $roleStaff->givePermissionTo([
             'joke-list', 'joke-show', 'joke-create', 'joke-edit', 'joke-delete',
-            'members'
+            'user-list',   'user-show',  'user-create',  'user-edit',  'user-delete',
+            'members',
         ]);
 
         // Generate the Client role

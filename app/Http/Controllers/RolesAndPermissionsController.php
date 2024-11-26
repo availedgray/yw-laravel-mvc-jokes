@@ -25,6 +25,9 @@ class RolesAndPermissionsController extends Controller
         Gate::define('can delete staffs, clients', function ($user) {
             return $user->hasAnyRole('Super-Admin', 'Admin');
         });
+        Gate::define('can delete clients', function ($user) {
+            return $user->hasAnyRole('Super-Admin', 'Admin', 'Staff');
+        });
         Gate::define('can delete super-admins', function ($user) {
             return $user->hasRole('Super-Admin');
         });

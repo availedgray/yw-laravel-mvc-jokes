@@ -14,18 +14,21 @@ Route::get('/about', [StaticController::class, 'about'])->name('about');
 Route::get('/contact', [StaticController::class, 'contact'])->name('contact');
 
 // Joke Routes
+Route::get('jokes/search', [JokeController::class, 'search'])->name('jokes.search');
 Route::resource('/jokes', JokeController::class)->except(['index', 'show'])->middleware('auth');
 Route::get('/jokes', [JokeController::class, 'index'])->name('jokes.index');
 Route::get('/jokes/{joke}', [JokeController::class, 'show'])->name('jokes.show');
 
 // User Routes
-Route::resource('/users', UserController::class)->except(['index', 'show'])->middleware('auth');
-Route::get('/users', [UserController::class, 'index'])->name('users.index');
-Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+Route::group(['middleware' => ['auth', 'role:Staff|Admin|Super-Admin' ]], function () {
+    Route::resource('users', UserController::class)->only([
+        'index', 'show', 'create', 'store', 'edit', 'update', 'destroy'
+    ]);
+});
 
 // Administration Dashboard
 Route::get('/dashboard', [StaticController::class, 'admin'])
-    ->middleware(['auth', 'verified', 'role:staff|Admin|Super-Admin'])
+    ->middleware(['auth', 'verified', 'role:Staff|Admin|Super-Admin'])
     ->name('dashboard');
 
 Route::group([

@@ -96,9 +96,9 @@
                                 @if( $data->hasPages() )
                                     {{ $data->links() }}
                                 @elseif( $data->total() === 0 )
-                                    <p class="text-xl">No users found</p>
+                                    <p class="text-xl">No jokes found</p>
                                 @else
-                                    <p class="py-2 text-zinc-800 text-sm">All users shown</p>
+                                    <p class="py-2 text-zinc-800 text-sm">All jokes shown</p>
                                 @endif
                             </td>
                         </tr>

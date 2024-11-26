@@ -6,13 +6,22 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    /**
+     *  secure user controller
+     */
+    function __construct(){
+        $this->middleware('password.confirm');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -27,10 +36,20 @@ class UserController extends Controller
      */
     public function create()
     {
-        {
-            $roles = Role::pluck('name','name')->all();
-            return view('users.create',compact('roles'));
+        Gate::authorize('create user');
+
+//        $roles = Role::pluck('name','name')->all();
+        $currentUser = Auth::user();
+        $roles = [];
+
+        if ($currentUser->hasRole('Super-Admin')) {
+            $roles = Role::pluck('name', 'name')->all();
+        } elseif ($currentUser->hasRole('Admin')) {
+            $roles = Role::whereNotIn('name', ['Super-Admin'])->pluck('name', 'name')->all();
+        } elseif ($currentUser->hasRole('Staff')) {
+            $roles = Role::where('name', 'Client')->pluck('name', 'name')->all();
         }
+        return view('users.create',compact('roles'));
     }
 
     /**
@@ -38,6 +57,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create user');
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
@@ -58,9 +78,9 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user): View
     {
-        $user = User::find($id);
+//        Gate::authorize('view user', $user);
         return view('users.show', compact('user'));
     }
 
@@ -74,7 +94,18 @@ class UserController extends Controller
          * This then is used to show the possible roles on the admin page
          * and allow the allocation of the role to the user.
          */
-        $roles = Role::pluck('name', 'name')->all();
+        Gate::authorize('edit user', $user);
+        $currentUser = Auth::user();
+        $roles = [];
+
+        if ($currentUser->hasRole('Super-Admin')) {
+            $roles = Role::pluck('name', 'name')->all();
+        } elseif ($currentUser->hasRole('Admin')) {
+            $roles = Role::whereNotIn('name', ['Super-Admin'])->pluck('name', 'name')->all();
+        } elseif ($currentUser->hasRole('Staff')) {
+            $roles = Role::where('name', 'Client')->pluck('name', 'name')->all();
+        }
+
         $userRole = $user->roles->pluck('name', 'name')->all();
 
         return view('users.edit', compact('user', 'roles', 'userRole'));
@@ -83,7 +114,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id):RedirectResponse
+    public function update(Request $request, User $user):RedirectResponse
     {
         /*
          * Validation may be completed in the method or in a UpdateUserRequest
@@ -96,9 +127,10 @@ class UserController extends Controller
          * returns true. You could also check to see if the user is
          * logged in and return true when they are.
          */
+        Gate::authorize('edit user', $user);
         $this->validate($request, [
             'name' => 'required',
-            'email' => 'required|email|unique:users,email,'.$id,
+            'email' => 'required|email|unique:users,email,'.$user->id,
             'password' => 'same:password_confirmation',
             'roles' => 'required'
         ]);
@@ -111,7 +143,7 @@ class UserController extends Controller
             $input = Arr::except($input, ['password']);
         }
 
-        $user = User::find($id);
+//        $user = User::find($id);
         $user->update($input);
 //        DB::table('model_has_roles')->where('model_id', $id)->delete();
 //        $user->admin->assignrole($request->input('roles'));
@@ -124,9 +156,11 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        User::find($id)->delete();
+//        User::find($id)->delete();
+        Gate::authorize('delete user', $user);
+        $user->delete();
         return redirect()->route('users.index')
             ->with('success', 'User deleted successfully');
     }

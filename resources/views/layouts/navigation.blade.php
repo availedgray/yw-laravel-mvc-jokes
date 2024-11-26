@@ -104,7 +104,7 @@
                 <!-- Search Bar -->
                 <div>
                     <form method="GET" action="/jokes/search" class="flex items-center space-x-3 mx-5">
-                        <input type="text" name="keywords" placeholder="Joke search..."
+                        <input type="text" name="keyword" placeholder="Joke search..."
                                class="w-full md:w-48 px-3 py-2 text-zinc-800 focus:outline-none focus:ring focus:ring-zinc-300 rounded-md border border-gray-300 text-sm"/>
 
                         <button type="submit"

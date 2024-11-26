@@ -2,24 +2,58 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DeleteJokeRequest;
 use App\Models\Category;
 use App\Models\Joke;
 use App\Http\Requests\StoreJokeRequest;
 use App\Http\Requests\UpdateJokeRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class JokeController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $keyword = $request->input('keyword');
+
+        if ($keyword) {
+            return $this->search($request);
+        }
 
         $data = Joke::with(['category', 'author'])->paginate(5);
         return view('jokes.index', compact('data'));
     }
 
+
     /**
+     * Search jokes based on keywords
+     */
+    public function search(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        if (!$keyword) {
+            return redirect()->route('jokes.index')->with('error', 'Please enter a keyword to search.');
+        }
+
+        $data = Joke::query()
+            ->where('text', 'like', '%' . $keyword . '%')
+            ->orWhere('title', 'like', '%' . $keyword . '%')
+            ->orWhereHas('category', function ($query) use ($keyword) {
+                $query->where('name', 'like', '%' . $keyword . '%');
+            })
+            ->orWhereHas('author', function ($query) use ($keyword) {
+                $query->where('name', 'like', '%' . $keyword . '%');
+            })
+            ->paginate(5);
+
+        return view('jokes.index', compact('data'));
+    }
+
+        /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -101,7 +135,7 @@ class JokeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Joke $joke)
+    public function destroy(DeleteJokeRequest $request, Joke $joke)
     {
         $joke->delete();
 
