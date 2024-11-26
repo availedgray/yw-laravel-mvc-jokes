@@ -61,7 +61,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('create user', function (User $user) {
-            return $user->hasAnyRole(['Super-Admin', 'Admin']);
+            return $user->hasAnyRole(['Super-Admin', 'Admin', 'Staff']);
         });
 
         Gate::define('edit user', function (User $user, User $targetUser) {

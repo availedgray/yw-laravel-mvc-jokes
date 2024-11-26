@@ -19,14 +19,16 @@
                 <!-- Left Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     @auth
-                        <x-nav-link :href="route('dashboard')"
-                                    :active="request()->routeIs('dashboard')">
-                            {{ __('Dashboard') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('users.index')"
-                                    :active="request()->routeIs('users.index')">
-                            {{ __('Users') }}
-                        </x-nav-link>
+                        @if (auth()->user()->hasRole(['Super-Admin', 'Admin', 'Staff']))
+                            <x-nav-link :href="route('dashboard')"
+                                        :active="request()->routeIs('dashboard')">
+                                {{ __('Dashboard') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('users.index')"
+                                        :active="request()->routeIs('users.index')">
+                                {{ __('Users') }}
+                            </x-nav-link>
+                        @endif
                     @else
                         <x-nav-link :href="route('home')"
                                     :active="request()->routeIs('home')">

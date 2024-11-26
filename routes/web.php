@@ -31,6 +31,10 @@ Route::get('/dashboard', [StaticController::class, 'admin'])
     ->middleware(['auth', 'verified', 'role:Staff|Admin|Super-Admin'])
     ->name('dashboard');
 
+// Guest Dashboard
+Route::get('/guest-dashboard', [StaticController::class, 'guestDashboard'])
+    ->name('guest.dashboard');
+
 Route::group([
     'prefix' => 'admin',
     'middleware' => ['auth', 'verified', 'role:Staff|Admin|Super-Admin']

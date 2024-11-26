@@ -51,4 +51,9 @@ class StaticController extends Controller
         ]);
         return view('static.admin-dashboard', compact(['statistics']));
     }
+
+    public function guest()
+    {
+        return view('static.guest-dashboard');
+    }
 }

@@ -11,7 +11,7 @@
         <header
             class="bg-zinc-700 text-zinc-200 rounded-t-lg -mx-4 -mt-8 p-8 text-2xl font-bold flex flex-row items-center">
             <h2 class="grow">
-                Users (Add')
+                Users (Add)
             </h2>
             <div class="order-first">
                 <i class="fa-solid fa-user min-w-8 text-white"></i>
