@@ -176,6 +176,11 @@ class UserController extends Controller
         return view('users.trash', compact(['users',]));
     }
 
+    /**
+     * restore a soft deleted user
+     * @param $user
+     * @return RedirectResponse
+     */
     public function restore($user)
     {
         $authUser = Auth::user();
@@ -190,6 +195,11 @@ class UserController extends Controller
             ->with('success', "Restored {$user->name}.");
     }
 
+    /**
+     * permanently delete a user
+     * @param $user
+     * @return RedirectResponse
+     */
     public function remove($user)
     {
         $authUser = Auth::user();
@@ -204,6 +214,10 @@ class UserController extends Controller
             ->with('success', "Permanently deleted {$user->name}.");
     }
 
+    /**
+     * recover all trash users
+     * @return RedirectResponse
+     */
     public function recoverAll()
     {
         $trashCount = User::onlyTrashed()->restore();
@@ -213,6 +227,10 @@ class UserController extends Controller
             ->with('success', "Successfully recovered $trashCount users.");
     }
 
+    /**
+     * empty user trash
+     * @return RedirectResponse
+     */
     public function empty()
     {
         $trashCount = User::onlyTrashed()->forceDelete();

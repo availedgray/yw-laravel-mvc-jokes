@@ -57,7 +57,7 @@ class JokeController extends Controller
         return view('jokes.index', compact('data'));
     }
 
-        /**
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -156,6 +156,11 @@ class JokeController extends Controller
         return view('jokes.trash', compact(['jokes',]));
     }
 
+    /**
+     * restore a soft deleted joke
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function restore($id)
     {
 //        dd($joke);
@@ -168,6 +173,11 @@ class JokeController extends Controller
             ->with('success', "Restored {$joke->title}.");
     }
 
+    /**
+     * permanently delete a joke
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function remove($id)
     {
         $joke = Joke::onlyTrashed()->findOrFail($id);
@@ -178,6 +188,10 @@ class JokeController extends Controller
             ->with('success', "Permanently deleted {$joke->title}.");
     }
 
+    /**
+     * recover all joke
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function recoverAll()
     {
         $trashCount = Joke::onlyTrashed()->restore();
@@ -187,6 +201,10 @@ class JokeController extends Controller
             ->with('success', "Successfully recovered $trashCount jokes.");
     }
 
+    /**
+     * empty joke trash
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function empty()
     {
         $trashCount = Joke::onlyTrashed()->forceDelete();

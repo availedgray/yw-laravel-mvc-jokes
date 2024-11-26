@@ -13,7 +13,10 @@ use Spatie\Permission\Models\Role;
 
 class StaticController extends Controller
 {
-
+    /**
+     * Display a listing of the resource.
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
+     */
     public function home()
     {
         $users = User::count();
@@ -24,16 +27,28 @@ class StaticController extends Controller
         return view('static.home',compact('users', 'categories', 'jokes', 'random_joke'));
     }
 
+    /**
+     * display about view
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
+     */
     public function about()
     {
         return view('static.about');
     }
 
+    /**
+     * display contact view
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
+     */
     public function contact()
     {
         return view('static.contact');
     }
 
+    /**
+     * display admin dashboard
+     * @return View
+     */
     function admin(): View
     {
         $users = User::count();
@@ -52,8 +67,8 @@ class StaticController extends Controller
         return view('static.admin-dashboard', compact(['statistics']));
     }
 
-    public function guest()
-    {
-        return view('static.guest-dashboard');
-    }
+//    public function guest()
+//    {
+//        return view('static.guest-dashboard');
+//    }
 }
