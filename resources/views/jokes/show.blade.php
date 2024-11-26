@@ -1,65 +1,78 @@
-<x-admin-layout>
-
+<x-app-layout>
 
     <x-slot name="header">
-        <h2 class="font-semibold text-2xl text-neutral-200 leading-tight uppercase rounded-lg bg-neutral-700 p-6">
-            {{ __('Administration') }}
+        <h2 class="font-semibold text-xl leading-tight">
+            Yang's {{ __('Joke DB') }}
         </h2>
     </x-slot>
 
-    <div class="space-y-8 ">
 
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-neutral-900">
-                    <p>Use this for flash messages</p>
-
-                </div>
+    <article class="-mx-4">
+        <header
+            class="bg-zinc-700 text-zinc-200 rounded-t-lg -mx-4 -mt-8 p-8 text-2xl font-bold flex flex-row items-center">
+            <h2 class="grow">
+                Jokes (Show)
+            </h2>
+            <div class="order-first">
+                <i class="fa-solid fa-user min-w-8 text-white"></i>
             </div>
-        </div>
+            <x-primary-link-button href="{{ route('jokes.create') }}"
+                                   class="bg-zinc-200 hover:bg-zinc-900 text-zinc-800 hover:text-white">
+                <i class="fa-solid fa-user-plus "></i>
+                <span class="pl-4">Add Joke</span>
+            </x-primary-link-button>
+        </header>
 
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-neutral-900">
+        {{--        <x-flash-message :data="session()"/>--}}
 
-                    <div class="row">
-                        <div class="col-lg-12 margin-tb mb-4">
-                            <div class="pull-left">
-                                <h2>Show User</h2>
-                                <div class="float-end">
-                                    <a class="btn btn-primary" href="{{ route('users.index') }}"> Back</a>
-                                </div>
-                            </div>
-                        </div>
+        <div class="flex flex-col flex-wrap my-4 mt-8">
+            <section class="grid grid-cols-1 gap-4 px-4 mt-4 sm:px-8">
+
+                <section class="min-w-full items-center bg-zinc-50 border border-zinc-600 rounded overflow-hidden">
+
+                    <div class="min-w-full text-left text-sm font-light text-surface dark:text-white">
+                        <header
+                            class="grid grid-cols-6 border-b border-neutral-200 bg-zinc-800 font-medium text-white dark:border-white/10">
+                            <p class="col-span-1 px-6 py-4 border-b border-zinc-200 dark:border-white/10">Item</p>
+                            <p class="col-span-5 px-6 py-4 border-b border-zinc-200 dark:border-white/10">Content</p>
+                        </header>
+
+                        <section class="grid grid-cols-6 border-b border-neutral-200 bg-white font-medium text-zinc-800 dark:border-white/10">
+                            <p class="col-span-1 bg-zinc-300 whitespace-nowrap px-6 py-4 border-b border-zinc-200 dark:border-white/10">Joke Title</p>
+                            <p class="col-span-5 whitespace-nowrap px-6 py-4 border-b border-zinc-200 dark:border-white/10">{{ $joke->title }}</p>
+                            <p class="col-span-1 bg-zinc-300 whitespace-nowrap px-6 py-4 border-b border-zinc-200 dark:border-white/10">Content</p>
+                            <p class="col-span-5 whitespace-nowrap px-6 py-4 border-b border-zinc-200 dark:border-white/10">{{ $joke->text }}</p>
+                            <p class="col-span-1 bg-zinc-300 whitespace-nowrap px-6 py-4 border-b border-zinc-200 dark:border-white/10">Author</p>
+                            <p class="col-span-5 whitespace-nowrap px-6 py-4 border-b border-zinc-200 dark:border-white/10">{{ $joke->author->name ?? 'Unknown Author' }}</p>
+                            <p class="col-span-1 bg-zinc-300 whitespace-nowrap px-6 py-4 border-b border-zinc-200 dark:border-white/10">Category</p>
+                            <p class="col-span-5 whitespace-nowrap px-6 py-4 border-b border-zinc-200 dark:border-white/10">{{ $joke->category->name ?? 'Unknown Category' }}</p>
+                        </section>
+
+                        <footer class="grid gid-cols-1 px-6 py-4 border-b border-neutral-200 font-medium text-zinc-800 dark:border-white/10">
+                            <form action="{{ route('jokes.destroy', $joke) }}"
+                                  method="POST"
+                                  class="flex gap-4">
+                                @csrf
+                                @method('DELETE')
+
+                                <x-primary-link-button href="{{ route('jokes.index') }}" class="bg-zinc-800">
+                                    Back
+                                </x-primary-link-button>
+                                <x-primary-link-button href="{{ route('jokes.edit',$joke->id) }}" class="bg-zinc-800">
+                                    Edit
+                                </x-primary-link-button>
+                                <x-secondary-button type="submit" class="bg-zinc-200">
+                                    Delete
+                                </x-secondary-button>
+                            </form>
+                        </footer>
                     </div>
 
-                    <div class="row">
-                        <div class="col-xs-12 mb-3">
-                            <div class="form-group">
-                                <strong>Name:</strong>
-                                {{ $user->name }}
-                            </div>
-                        </div>
-                        <div class="col-xs-12 mb-3">
-                            <div class="form-group">
-                                <strong>Email:</strong>
-                                {{ $user->email }}
-                            </div>
-                        </div>
-                        <div class="col-xs-12 mb-3">
-                            <div class="flex flex-row space-x-2 items-center">
-                                <strong>Roles:</strong>
-                                @if(!empty($user->getRoleNames()))
-                                    @foreach($user->getRoleNames() as $v)
-                                        <label class="px-2 bg-neutral-700 text-neutral-200 rounded-full ">{{ $v }}</label>
-                                    @endforeach
-                                @endif
-                            </div>
-                        </div>
-                    </div>
+                </section>
 
-                </div>
-            </div>
+            </section>
+
         </div>
-    </div>
-</x-admin-layout>
+
+    </article>
+</x-app-layout>

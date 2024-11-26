@@ -2,59 +2,116 @@
 
     <x-slot name="header">
         <h2 class="font-semibold text-xl leading-tight">
-            Yang Wang's {{ __('Joke DB') }}
+            Yang's {{ __('Joke DB') }}
         </h2>
     </x-slot>
 
-    <div class="space-y-8 ">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-neutral-900">
-                    <p>Use this for flash messages</p>
 
-                </div>
+    <article class="-mx-4">
+        <header
+            class="bg-zinc-700 text-zinc-200 rounded-t-lg -mx-4 -mt-8 p-8 text-2xl font-bold flex flex-row items-center">
+            <h2 class="grow">
+                Jokes (List)
+            </h2>
+            <div class="order-first">
+                <i class="fa-solid fa-user min-w-8 text-white"></i>
             </div>
-        </div>
+            <x-primary-link-button href="{{ route('jokes.create') }}"
+                                   class="bg-zinc-200 hover:bg-zinc-900 text-zinc-800 hover:text-white">
+                <i class="fa-solid fa-user-plus "></i>
+                <span class="pl-4">Add Joke</span>
+            </x-primary-link-button>
+        </header>
 
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-neutral-900">
+                    @auth
+                        {{--            <x-flash-message :data="session()"/>--}}
+                        <x-flash-message
+                            message="{{ session('success') }}"
+                            icon="fa-check-circle"
+                            type="Success"
+                            fgColour="text-green-500"
+                            bgColour="bg-green-500"
+                            fgText="text-green-700"
+                            bgText="bg-green-100"
+                        />
+                    @endauth
 
-                    <table class="table w-full">
-                        <thead>
-                        <tr class="bg-neutral-500 rounded-t-lg text-neutral-200">
-                            <th class="p-2 text-left">Title</th>
-                            <th class="p-2 text-left">Text</th>
-                            <th class="p-2 text-left">Author</th>
-                            <th class="p-2 text-left">Category</th>
-                            <th class="p-2 text-right w-48">Action</th>
+        <div class="flex flex-col flex-wrap my-4 mt-8">
+            <section class="grid grid-cols-1 gap-4 px-4 mt-4 sm:px-8">
+
+                <section class="min-w-full items-center bg-zinc-50 border border-zinc-600 rounded overflow-hidden">
+
+                    <table class="min-w-full text-left text-sm font-light text-surface dark:text-white">
+                        <thead
+                            class="border-b border-neutral-200 bg-zinc-800 font-medium text-white dark:border-white/10">
+                        <tr>
+                            <th scope="col" class="px-6 py-4">Title</th>
+                            <th scope="col" class="px-6 py-4">Joke Text</th>
+                            <th scope="col" class="px-6 py-4">Author</th>
+                            <th scope="col" class="px-6 py-4">Category</th>
+                            <th scope="col" class="px-6 py-4">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach ($data as $key => $joke)
-                            <tr class="text-sm">
-                                <td class="px-2">{{ $joke->title }}</td>
-                                <td class="px-2">{{ $joke->text }}</td>
-                                <td class="px-2">{{ $joke->author->name ?? 'Unknown Author' }}</td>
-                                <td class="px-2">{{ $joke->category->name ?? 'Uncategorized' }}</td>
-                                <td class="px-2 text-right">
-                                    <a class="btn btn-info" href="{{ route('jokes.show',$joke->id) }}">Show</a>
-                                    <a class="btn btn-primary" href="{{ route('jokes.edit',$joke->id) }}">Edit</a>
-                                    <a class="btn btn-success" href="{{ route('jokes.destroy',$joke->id) }}"> Delete</a>
+                            <tr class="border-b border-zinc-300 dark:border-white/10">
+                                <td class="whitespace-nowrap px-6 py-4">{{ $joke->title }}</td>
+                                <td class="whitespace-nowrap px-6 py-4">{{ $joke->text }}</td>
+                                <td class="whitespace-nowrap px-6 py-4">{{ $joke->author->name ?? 'Unknown Author' }}</td>
+                                <td class="whitespace-nowrap px-6 py-4">{{ $joke->category->name ?? 'Uncategorized' }}</td>
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    <form action="{{ route('jokes.destroy', $joke) }}"
+                                          method="POST"
+                                          class="flex gap-4">
+                                        @csrf
+                                        @method('DELETE')
+
+                                    <x-primary-link-button href="{{ route('jokes.show', $joke) }}"
+                                                           class="bg-zinc-800">
+                                        <span>Show </span>
+                                        <i class="fa-solid fa-eye pr-2 order-first"></i>
+                                    </x-primary-link-button>
+
+                                    <x-primary-link-button href="{{ route('jokes.edit', $joke) }}"
+                                                           class="bg-zinc-800">
+                                        <span>Edit </span>
+                                        <i class="fa-solid fa-edit pr-2 order-first"></i>
+                                    </x-primary-link-button>
+
+                                    <x-secondary-button type="submit"
+                                                        class="bg-zinc-200">
+                                        <span>Delete</span>
+                                        <i class="fa-solid fa-times pr-2 order-first"></i>
+                                    </x-secondary-button>
+
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach
                         </tbody>
+
                         <tfoot>
-                        <tr>
-                            <td colspan="4">{{ $data->links() }}</td>
+                        <tr class="bg-zinc-100">
+                            <td colspan="5" class="px-6 py-2">
+                                @if( $data->hasPages() )
+                                    {{ $data->links() }}
+                                @elseif( $data->total() === 0 )
+                                    <p class="text-xl">No users found</p>
+                                @else
+                                    <p class="py-2 text-zinc-800 text-sm">All users shown</p>
+                                @endif
+                            </td>
                         </tr>
                         </tfoot>
+
                     </table>
 
+                </section>
 
-                </div>
-            </div>
+            </section>
+
         </div>
-    </div>
+
+    </article>
+    </article>
 </x-app-layout>

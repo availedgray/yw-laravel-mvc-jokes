@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateJokeRequest extends FormRequest
 {
@@ -11,7 +12,13 @@ class UpdateJokeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        $user = Auth::user();
+        $joke = $this->route('joke');
+
+        return $user->id === $joke->author_id ||
+            $user->hasRole('Super-admin') ||
+            $user->hasRole('Admin') ||
+            $user->hasRole('Staff');
     }
 
     /**

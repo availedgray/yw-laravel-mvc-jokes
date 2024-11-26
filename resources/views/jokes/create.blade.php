@@ -1,94 +1,95 @@
-<x-admin-layout>
+<x-app-layout>
 
     <x-slot name="header">
-        <h2 class="font-semibold text-2xl text-neutral-200 leading-tight uppercase rounded-lg bg-neutral-700 p-6">
-            {{ __('Administration') }}
+        <h2 class="font-semibold text-xl leading-tight">
+            Yang's {{ __('Joke DB') }}
         </h2>
     </x-slot>
 
-
-    <div class="space-y-8 ">
-
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-neutral-900">
-                    <p>Use this for flash messages</p>
-
-                </div>
+    <article class="-mx-4">
+        <header class="bg-zinc-700 text-zinc-200 rounded-t-lg -mx-4 -mt-8 p-8 text-2xl font-bold flex flex-row items-center">
+            <h2 class="grow">Add Joke</h2>
+            <div class="order-first">
+                <i class="fa-solid fa-plus min-w-8 text-white"></i>
             </div>
-        </div>
+        </header>
 
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-neutral-900">
+        @auth
+            <x-flash-message
+                message="{{ session('success') }}"
+                icon="fa-check-circle"
+                type="Success"
+                fgColour="text-green-500"
+                bgColour="bg-green-500"
+                fgText="text-green-700"
+                bgText="bg-green-100"
+            />
+        @endauth
 
-                    <div class="col-lg-12 margin-tb mb-4">
-                        <div class="pull-left">
-                            <h2>Create New User
-                                <div class="float-end">
-                                    <a class="btn btn-primary" href="{{ route('users.index') }}"> Back</a>
-                                </div>
-                            </h2>
-                        </div>
+        <div class="flex flex-col flex-wrap my-4 mt-8">
+            <section class="grid grid-cols-1 gap-4 px-4 mt-4 sm:px-8">
+
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <label class="w-1/6 font-bold">Whoops!</label> There were some problems with your input.<br><br>
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
+                @endif
 
-                    @if (count($errors) > 0)
-                        <div class="alert alert-danger">
-                            <label class="w-1/6 font-bold">Whoops!</label> There were some problems with your input.<br><br>
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-
-                    <form action="{{ route('users.store') }}" method="POST">
+                <section class="min-w-full items-center bg-zinc-50 border border-zinc-600 rounded overflow-hidden">
+                    <form action="{{ route('jokes.store') }}" method="POST" class="flex flex-col gap-4">
                         @csrf
-                        <div class="row">
-                            <div class="col-xs-12 mb-3">
-                                <div class="form-group">
-                                    <strong>Name:</strong>
-                                    <input type="text" name="name" class="form-control" placeholder="Name">
+
+                        <div class="min-w-full text-left text-sm font-light text-surface dark:text-white">
+                            <header class="border-b border-neutral-200 bg-zinc-800 font-medium text-white dark:border-white/10">
+                                <p class="col-span-1 px-6 py-4">Enter Joke Details</p>
+                            </header>
+
+                            <section class="py-4 px-6 border-b border-neutral-200 bg-white font-medium text-zinc-800 dark:border-white/10">
+
+                                {{-- Joke Title --}}
+                                <div class="flex flex-col my-2">
+                                    <x-input-label for="title">Joke Title</x-input-label>
+                                    <x-text-input id="title" name="title" value="{{ old('title') }}" />
+                                    <x-input-error :messages="$errors->get('title')" class="mt-2"/>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 mb-3">
-                                <div class="form-group">
-                                    <strong>Email:</strong>
-                                    <input type="email" name="email" class="form-control" placeholder="Email">
-                                </div>
-                            </div>
-                            <div class="col-xs-12 mb-3">
-                                <div class="form-group">
-                                    <strong>Password:</strong>
-                                    <input type="password" name="password" class="form-control" placeholder="Password">
-                                </div>
-                            </div>
-                            <div class="col-xs-12 mb-3">
-                                <div class="form-group">
-                                    <strong>Confirm Password:</strong>
-                                    <input type="password" name="confirm-password" class="form-control"
-                                           placeholder="Confirm Password">
-                                </div>
-                            </div>
-                            <div class="col-xs-12 mb-3">
-                                <div class="form-group">
-                                    <strong>Role:</strong>
-                                    <select class="form-control multiple" multiple name="roles[]">
-                                        @foreach ($roles as $role)
-                                            <option value="{{ $role }}">{{ $role }}</option>
+
+                                {{-- Category --}}
+                                <div class="flex flex-col my-2">
+                                    <x-input-label for="category_id">Category</x-input-label>
+                                    <select id="category_id" name="category_id" class="rounded-md shadow-sm border-gray-300">
+                                        <option value="" selected>-- Select a category --</option>
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
                                         @endforeach
                                     </select>
+                                    <x-input-error :messages="$errors->get('category_id')" class="mt-2"/>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 mb-3 text-center">
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </div>
+
+                                <div class="flex flex-col my-2">
+                                    <x-input-label for="text">Joke Content</x-input-label>
+                                    <textarea id="text" name="text" rows="5" class="rounded-md shadow-sm border-gray-300"></textarea>
+                                    <x-input-error :messages="$errors->get('text')" class="mt-2"/>
+                                </div>
+
+                            </section>
+
+                            <footer class="flex gap-4 px-6 py-4 border-b border-neutral-200 font-medium text-zinc-800 dark:border-white/10">
+                                <x-primary-link-button href="{{ route('jokes.index') }}" class="bg-zinc-800">
+                                    Cancel
+                                </x-primary-link-button>
+                                <x-primary-button type="submit" class="bg-zinc-800">
+                                    Save
+                                </x-primary-button>
+                            </footer>
                         </div>
                     </form>
-                </div>
-            </div>
+                </section>
+            </section>
         </div>
-    </div>
-</x-admin-layout>
+    </article>
+</x-app-layout>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Joke;
 use App\Http\Requests\StoreJokeRequest;
 use App\Http\Requests\UpdateJokeRequest;
@@ -23,7 +24,8 @@ class JokeController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::all();
+        return view('jokes.create',compact('categories'));
     }
 
     /**
@@ -31,7 +33,26 @@ class JokeController extends Controller
      */
     public function store(StoreJokeRequest $request)
     {
-        //
+        $this->validate($request, [
+            'title' => 'required|string|max:255',
+            'text' => 'required|string',
+            'category' => 'nullable|string|max:255',
+        ]);
+
+        $input = $request->all();
+
+        if (!empty($input['category'])) {
+            $category = Category::where('category', $input['category'])->first();
+            $input['category_id'] = $category ? $category->id : null;
+        } else {
+            $input['category_id'] = 1;
+        }
+        $input['author_id'] = auth()->user()->id;
+
+        Joke::create($input);
+
+        return redirect()->route('jokes.index')
+            ->with('success', 'Joke created successfully');
     }
 
     /**
@@ -39,7 +60,7 @@ class JokeController extends Controller
      */
     public function show(Joke $joke)
     {
-        //
+        return view('jokes.show', compact('joke'));
     }
 
     /**
@@ -47,7 +68,8 @@ class JokeController extends Controller
      */
     public function edit(Joke $joke)
     {
-        //
+        $categories = Category::all();
+        return view('jokes.edit', compact('joke', 'categories'));
     }
 
     /**
@@ -55,7 +77,25 @@ class JokeController extends Controller
      */
     public function update(UpdateJokeRequest $request, Joke $joke)
     {
-        //
+        $this->validate($request, [
+            'title' => 'required|string|max:255',
+            'text' => 'required|string',
+            'category' => 'nullable|string|max:255',
+        ]);
+
+        $input = $request->all();
+
+        if (!empty($input['category'])) {
+            $category = Category::where('category', $input['category'])->first();
+            $input['category_id'] = $category ? $category->id : null;
+        } else {
+            $input['category_id'] = 1;
+        }
+
+        $joke->update($input);
+
+        return redirect()->route('jokes.index')
+            ->with('success', 'Joke updated successfully');
     }
 
     /**
@@ -63,6 +103,9 @@ class JokeController extends Controller
      */
     public function destroy(Joke $joke)
     {
-        //
+        $joke->delete();
+
+        return redirect()->route('jokes.index')
+            ->with('success', 'Joke deleted successfully');
     }
 }
