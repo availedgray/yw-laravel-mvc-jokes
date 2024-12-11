@@ -58,4 +58,17 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Joke::class);
     }
+
+    /**
+     * Booted method to handle default role assignment.
+     */
+    protected static function booted()
+    {
+        static::creating(function ($user) {
+            // Check if the user has no roles and assign 'Client' by default
+            if (!$user->roles()->exists()) {
+                $user->assignRole('Client');
+            }
+        });
+    }
 }
