@@ -2,7 +2,7 @@
 
     <x-slot name="header">
         <h2 class="font-semibold text-xl leading-tight">
-            Yang's {{ __('Joke DB') }}
+            Yang Wang's {{ __('Joke DB') }}
         </h2>
     </x-slot>
 

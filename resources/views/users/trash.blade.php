@@ -1,9 +1,8 @@
-
 <x-app-layout>
     <article class="container mx-auto max-w-7xl">
         <x-slot name="header">
             <h2 class="font-semibold text-xl leading-tight">
-                Yang's {{ __('Joke DB') }}
+                Yang Wang's {{ __('Joke DB') }}
             </h2>
         </x-slot>
             <i class="fa fa-user-slash text-5xl"></i>

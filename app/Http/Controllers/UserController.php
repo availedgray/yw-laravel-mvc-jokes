@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -11,10 +12,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    use AuthorizesRequests;
     /**
      *  secure user controller
      */
@@ -38,9 +41,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        Gate::authorize('create user');
+//        Gate::authorize('create user');
+        $this->authorize('create', User::class);
 
-//        $roles = Role::pluck('name','name')->all();
         $currentUser = Auth::user();
         $roles = [];
 
@@ -59,7 +62,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        Gate::authorize('create user');
+        $this->authorize('create', User::class);
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
@@ -83,6 +86,7 @@ class UserController extends Controller
     public function show(User $user): View
     {
 //        Gate::authorize('view user', $user);
+        $this->authorize('view', $user);
         return view('users.show', compact('user'));
     }
 
@@ -96,7 +100,8 @@ class UserController extends Controller
          * This then is used to show the possible roles on the admin page
          * and allow the allocation of the role to the user.
          */
-        Gate::authorize('edit, restore and remove user', $user);
+//        Gate::authorize('edit, restore and remove user', $user);
+        $this->authorize('update', $user);
         $currentUser = Auth::user();
         $roles = [];
 
@@ -129,7 +134,7 @@ class UserController extends Controller
          * returns true. You could also check to see if the user is
          * logged in and return true when they are.
          */
-        Gate::authorize('edit user', $user);
+        $this->authorize('update', $user);
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$user->id,
@@ -161,7 +166,7 @@ class UserController extends Controller
     public function destroy(User $user)
     {
 //        User::find($id)->delete();
-        Gate::authorize('delete user', $user);
+        $this->authorize('delete', $user);
         $user->delete();
         return redirect()->route('users.index')
             ->with('success', 'User deleted successfully');
@@ -183,11 +188,12 @@ class UserController extends Controller
      */
     public function restore($user)
     {
-        $authUser = Auth::user();
-        $targetUser = User::onlyTrashed()->findOrFail($user);
-        Gate::authorize('edit, restore and remove user', [$authUser, $targetUser]);
-
+//        $authUser = Auth::user();
+//        $targetUser = User::onlyTrashed()->findOrFail($user);
         $user = User::onlyTrashed()->findOrFail($user);
+
+        $this->authorize('restore', $user);
+
         $user->restore();
 
         return redirect()
@@ -202,9 +208,10 @@ class UserController extends Controller
      */
     public function remove($user)
     {
-        $authUser = Auth::user();
-        $targetUser = User::onlyTrashed()->findOrFail($user);
-        Gate::authorize('edit, restore and remove user', [$authUser, $targetUser]);
+//        $authUser = Auth::user();
+//        $targetUser = User::onlyTrashed()->findOrFail($user);
+//        Gate::authorize('edit, restore and remove user', [$authUser, $targetUser]);
+        $this->authorize('forceDelete', $user);
 
         $user = User::onlyTrashed()->findOrFail($user);
         $user->forceDelete();

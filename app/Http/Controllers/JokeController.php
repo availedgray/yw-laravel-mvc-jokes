@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\DeleteJokeRequest;
-use App\Http\Requests\RemoveJokeRequest;
-use App\Http\Requests\RestoreJokeRequest;
 use App\Models\Category;
 use App\Models\Joke;
-use App\Http\Requests\StoreJokeRequest;
-use App\Http\Requests\UpdateJokeRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 
 class JokeController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Display a listing of the resource.
      */
@@ -69,8 +68,10 @@ class JokeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreJokeRequest $request)
+    public function store(Request $request)
     {
+        Auth::check();
+
         $this->validate($request, [
             'title' => 'required|string|max:255',
             'text' => 'required|string',
@@ -106,6 +107,8 @@ class JokeController extends Controller
      */
     public function edit(Joke $joke)
     {
+        $this->authorize('update', $joke);
+
         $categories = Category::all();
         return view('jokes.edit', compact('joke', 'categories'));
     }
@@ -113,8 +116,10 @@ class JokeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateJokeRequest $request, Joke $joke)
+    public function update(Request $request, Joke $joke)
     {
+        $this->authorize('update', $joke);
+
         $this->validate($request, [
             'title' => 'required|string|max:255',
             'text' => 'required|string',
@@ -139,8 +144,10 @@ class JokeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DeleteJokeRequest $request, Joke $joke)
+    public function destroy(Request $request, Joke $joke)
     {
+        $this->authorize('delete', $joke);
+
         $joke->delete();
 
         return redirect()->route('jokes.index')
@@ -159,12 +166,14 @@ class JokeController extends Controller
     /**
      * restore a soft deleted joke
      * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function restore($id)
     {
 //        dd($joke);
         $joke = Joke::onlyTrashed()->findOrFail($id);
+
+        $this->authorize('restore', $joke);
 
         $joke->restore();
 
@@ -176,11 +185,12 @@ class JokeController extends Controller
     /**
      * permanently delete a joke
      * @param $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function remove($id)
     {
         $joke = Joke::onlyTrashed()->findOrFail($id);
+        $this->authorize('forceDelete', $joke);
         $joke->forceDelete();
 
         return redirect()
@@ -190,7 +200,7 @@ class JokeController extends Controller
 
     /**
      * recover all joke
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function recoverAll()
     {
@@ -203,7 +213,7 @@ class JokeController extends Controller
 
     /**
      * empty joke trash
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function empty()
     {
